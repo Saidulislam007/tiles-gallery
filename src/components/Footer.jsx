@@ -41,7 +41,7 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* RIGHT SIDE */}
+        
         <div className="space-y-4 text-center sm:text-left">
           <h3 className="text-lg md:text-xl font-semibold text-white">
             Contact Us
