@@ -33,7 +33,7 @@ export default function Navbar() {
           Tiles <span className="text-blue-400">Gallery</span>
         </Link>
 
-        {/* Desktop Links */}
+        {/* DesktopLinks */}
         <div className="hidden md:flex space-x-6 items-center">
           <Link href="/" className="hover:text-blue-400 text-xl">Home</Link>
           <Link href="/allTiles" className="hover:text-blue-400 text-xl">All Tiles</Link>
