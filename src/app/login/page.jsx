@@ -1,9 +1,9 @@
-
 "use client";
 
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 import {
   Button,
@@ -43,9 +43,7 @@ export default function LoginPage() {
         });
 
       if (response.error) {
-        alert(
-          "Error: " + response.error.message
-        );
+        toast.error(response.error.message || "Login failed");
 
         setLoading(false);
 
@@ -55,6 +53,8 @@ export default function LoginPage() {
       router.push("/");
     } catch (error) {
       console.error(error);
+
+      toast.error("Something went wrong");
 
       setLoading(false);
     }
@@ -87,10 +87,7 @@ export default function LoginPage() {
         </div>
 
         {/* Form */}
-        <Form
-          className="flex flex-col gap-5"
-          onSubmit={onSubmit}
-        >
+        <Form className="flex flex-col gap-5" onSubmit={onSubmit}>
 
           {/* Email */}
           <TextField
@@ -99,19 +96,14 @@ export default function LoginPage() {
             type="email"
             validate={(value) => {
               if (
-                !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
-                  value
-                )
+                !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)
               ) {
                 return "Please enter a valid email address";
               }
-
               return null;
             }}
           >
-            <Label className="text-gray-700 text-sm">
-              Email
-            </Label>
+            <Label className="text-gray-700 text-sm">Email</Label>
 
             <Input
               placeholder="john@example.com"
@@ -131,13 +123,10 @@ export default function LoginPage() {
               if (!/[0-9]/.test(value)) {
                 return "Password must contain at least one number";
               }
-
               return null;
             }}
           >
-            <Label className="text-gray-700 text-sm">
-              Password
-            </Label>
+            <Label className="text-gray-700 text-sm">Password</Label>
 
             <Input
               placeholder="Enter your password"
@@ -145,8 +134,7 @@ export default function LoginPage() {
             />
 
             <Description className="text-gray-500 text-xs">
-              Must be at least 8 characters with
-              1 uppercase and 1 number
+              Must be at least 8 characters with 1 uppercase and 1 number
             </Description>
 
             <FieldError className="text-red-500 text-xs" />
@@ -174,16 +162,15 @@ export default function LoginPage() {
         {/* Footer */}
         <p className="text-center text-xs text-gray-400 mt-6">
           Don’t have an account?{" "}
-
           <span
-            onClick={() =>
-              router.push("/register")
-            }
+            onClick={() => router.push("/register")}
             className="text-gray-700 font-medium cursor-pointer hover:underline"
           >
             Sign up
           </span>
         </p>
+
+        {/* Google Login */}
         <Button
           type="button"
           onClick={async () => {
@@ -194,6 +181,7 @@ export default function LoginPage() {
               });
             } catch (error) {
               console.error(error);
+              toast.error("Google login failed");
             }
           }}
           className="w-full bg-white text-black hover:bg-gray-200 rounded-lg transition mt-3 flex items-center justify-center gap-2"
@@ -225,8 +213,8 @@ export default function LoginPage() {
 
           Continue with Google
         </Button>
+
       </div>
     </div>
   );
 }
-

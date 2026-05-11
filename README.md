@@ -1,36 +1,141 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🧱 Tiles Gallery Website
 
-## Getting Started
+A modern and responsive Tiles Gallery web application built with **Next.js**, showcasing different types of tiles with authentication, search, and detailed product views.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📌 Project Purpose
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+This project is designed to help users explore and discover different types of tiles (ceramic, marble, wooden, etc.) in an interactive and visually appealing gallery format. It includes authentication, profile management, and a full tile browsing experience.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🚀 Key Features
 
-To learn more about Next.js, take a look at the following resources:
+- 🔐 User Authentication (Email & Google Login)
+- 🏠 Home Page with Featured Tiles
+- 🖼️ All Tiles Gallery with Search Functionality
+- 🔍 Single Tile Details Page
+- 👤 My Profile Page (View & Update User Info)
+- ✏️ Update Profile (Name & Image URL)
+- 📱 Fully Responsive (Mobile, Tablet, Desktop)
+- ⚡ Loader on Data Fetching
+- ❌ Custom 404 Not Found Page
+- 🔒 Protected Routes (Private Pages)
+- ☁️ Environment Variables for Security
+- 🎨 Unique Modern UI Design
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🧰 Tech Stack
 
-## Deploy on Vercel
+- **Framework:** Next.js (App Router)
+- **Styling:** Tailwind CSS + HeroUI / DaisyUI
+- **Authentication:** BetterAuth (MongoDB Adapter)
+- **State/Data:** JSON Server (Mock API)
+- **Deployment:** Vercel / Render
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📦 NPM Packages Used
+
+- `next`
+- `react`
+- `tailwindcss`
+- `@heroui/react`
+- `better-auth`
+- `axios`
+- `json-server`
+- `animate.css` *(for UI animation)*
+
+---
+
+## 📂 Project Routes
+
+### Public Routes
+- `/` → Home Page
+- `/all-tiles` → Tiles Gallery
+- `/login` → Login Page
+- `/register` → Registration Page
+
+### Private Routes
+- `/tile/[id]` → Tile Details Page
+- `/my-profile` → User Profile Page
+
+---
+
+## 🔐 Authentication Flow
+
+### Login Page
+- Email + Password Login
+- Google Sign-In Button
+- Redirects to Home on success
+- Error toast on failure
+- Link to Register Page
+
+### Register Page
+- Name, Email, Photo URL, Password
+- Google Sign-Up option
+- Redirects to Login page after success
+- Error handling with toast
+
+---
+
+## 🏠 Home Page Features
+
+- Banner: "Discover Your Perfect Aesthetic"
+- Browse Now button → All Tiles Page
+- Marquee Text (New Arrivals / Features)
+- Featured Tiles (Top 4 from API)
+- View Details button on each tile
+
+---
+
+## 🖼️ All Tiles Page
+
+- Search bar to filter tiles by title
+- Responsive grid layout
+- Tile cards with image + title
+- Details button → Tile details page
+
+---
+
+## 🔍 Tile Details Page
+
+- Large tile image preview
+- Title, description, material, dimensions
+- Tags (e.g. Modern, Ceramic, Blue)
+
+---
+
+## 👤 My Profile Page (Challenge Feature)
+
+- Show logged-in user info
+- Name, Email, Profile Image
+- Update button:
+  - Navigate to update page
+  - Edit Name & Image URL only
+
+---
+
+## ✏️ Update Profile Page
+
+Form fields:
+- Name
+- Image URL
+
+Update functionality:
+- Uses BetterAuth update user API
+- Redirects back to profile page
+
+---
+
+## ⚙️ Environment Variables
+
+Create `.env.local` file:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5000
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
