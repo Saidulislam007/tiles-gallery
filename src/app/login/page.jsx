@@ -1,7 +1,10 @@
+
 "use client";
 
+import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+
 import {
   Button,
   Description,
@@ -15,29 +18,56 @@ import {
 export default function LoginPage() {
   const router = useRouter();
 
+  const [loading, setLoading] = useState(false);
+
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
+
     const formData = new FormData(e.currentTarget);
+
     const data = {};
 
     formData.forEach((value, key) => {
       data[key] = value.toString();
     });
 
-    const { data: result, error } = await authClient.signIn.email({
-      email: data.email,
-      password: data.password,
-      rememberMe: true,
-      callbackURL: "/",
-    });
+    try {
+      const response =
+        await authClient.signIn.email({
+          email: data.email,
+          password: data.password,
+          rememberMe: true,
+          callbackURL: "/",
+        });
 
-    if (error) {
-      alert(`Error: ${error.message}`);
-      return;
+      if (response.error) {
+        alert(
+          "Error: " + response.error.message
+        );
+
+        setLoading(false);
+
+        return;
+      }
+
+      router.push("/");
+    } catch (error) {
+      console.error(error);
+
+      setLoading(false);
     }
-
-    alert(`Form submitted with: ${JSON.stringify(result, null, 2)}`);
   };
+
+  // Loading Spinner
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-white">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white px-4">
@@ -50,12 +80,17 @@ export default function LoginPage() {
           <h1 className="text-2xl font-semibold text-gray-900">
             Welcome Back
           </h1>
+
           <p className="text-sm text-gray-500 mt-1">
             Login to continue your journey
           </p>
         </div>
 
-        <Form className="flex flex-col gap-5" onSubmit={onSubmit}>
+        {/* Form */}
+        <Form
+          className="flex flex-col gap-5"
+          onSubmit={onSubmit}
+        >
           
           {/* Email */}
           <TextField
@@ -64,18 +99,25 @@ export default function LoginPage() {
             type="email"
             validate={(value) => {
               if (
-                !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)
+                !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
+                  value
+                )
               ) {
                 return "Please enter a valid email address";
               }
+
               return null;
             }}
           >
-            <Label className="text-gray-700 text-sm">Email</Label>
+            <Label className="text-gray-700 text-sm">
+              Email
+            </Label>
+
             <Input
               placeholder="john@example.com"
               className="border border-gray-300 focus:border-gray-900 focus:ring-2 focus:ring-gray-200 rounded-lg"
             />
+
             <FieldError className="text-red-500 text-xs" />
           </TextField>
 
@@ -89,22 +131,29 @@ export default function LoginPage() {
               if (!/[0-9]/.test(value)) {
                 return "Password must contain at least one number";
               }
+
               return null;
             }}
           >
-            <Label className="text-gray-700 text-sm">Password</Label>
+            <Label className="text-gray-700 text-sm">
+              Password
+            </Label>
+
             <Input
               placeholder="Enter your password"
               className="border border-gray-300 focus:border-gray-900 focus:ring-2 focus:ring-gray-200 rounded-lg"
             />
+
             <Description className="text-gray-500 text-xs">
-              Must be at least 8 characters with 1 uppercase and 1 number
+              Must be at least 8 characters with
+              1 uppercase and 1 number
             </Description>
+
             <FieldError className="text-red-500 text-xs" />
           </TextField>
 
           {/* Buttons */}
-          <div className="flex gap-3 mt-2">
+          <div className="flex gap-3 mt-2 w-full">
             <Button
               type="submit"
               className="w-full bg-black text-white hover:bg-gray-800 rounded-lg transition"
@@ -125,8 +174,11 @@ export default function LoginPage() {
         {/* Footer */}
         <p className="text-center text-xs text-gray-400 mt-6">
           Don’t have an account?{" "}
+          
           <span
-            onClick={() => router.push("/register")}
+            onClick={() =>
+              router.push("/register")
+            }
             className="text-gray-700 font-medium cursor-pointer hover:underline"
           >
             Sign up
@@ -136,3 +188,4 @@ export default function LoginPage() {
     </div>
   );
 }
+
