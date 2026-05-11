@@ -80,7 +80,7 @@ This project is designed to help users explore and discover different types of t
 - Redirects to Login page after success
 - Error handling with toast
 
----
+--
 
 ## 🏠 Home Page Features
 
