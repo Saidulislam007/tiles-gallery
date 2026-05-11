@@ -26,24 +26,31 @@ export default function RegisterPage() {
       data[key] = value.toString();
     });
 
-    const { data: result, error } = await authClient.signUp.email({
-      name: data.name,
-      email: data.email,
-      password: data.password,
-      image: data.image,
-      callbackURL: "/",
-    });
+    try {
+      const { error } = await authClient.signUp.email({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        image: data.image,
+        callbackURL: "/", // keep this OR manual redirect (not both)
+      });
 
-    if (error) {
-      toast.error(error.message || "Registration failed");
-      return;
+      if (error) {
+        toast.error(error.message || "Registration failed");
+        return;
+      }
+
+      toast.success("Account created successfully!");
+
+      // ✅ safe redirect
+      setTimeout(() => {
+        router.replace("/");
+      }, 600);
+
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong");
     }
-
-    toast.success("Account created successfully!");
-
-    setTimeout(() => {
-      router.replace("/");
-    }, 800);
   };
 
   return (
@@ -62,6 +69,7 @@ export default function RegisterPage() {
 
         <Form className="flex flex-col gap-5" onSubmit={onSubmit}>
 
+          {/* Name */}
           <TextField isRequired name="name" type="text">
             <Label className="text-gray-700 text-sm">Name</Label>
             <Input
@@ -71,6 +79,7 @@ export default function RegisterPage() {
             <FieldError className="text-red-500 text-xs" />
           </TextField>
 
+          {/* Image */}
           <TextField isRequired name="image" type="url">
             <Label className="text-gray-700 text-sm">Image URL</Label>
             <Input
@@ -80,6 +89,7 @@ export default function RegisterPage() {
             <FieldError className="text-red-500 text-xs" />
           </TextField>
 
+          {/* Email */}
           <TextField
             isRequired
             name="email"
@@ -101,6 +111,7 @@ export default function RegisterPage() {
             <FieldError className="text-red-500 text-xs" />
           </TextField>
 
+          {/* Password */}
           <TextField
             isRequired
             minLength={8}
@@ -119,11 +130,12 @@ export default function RegisterPage() {
               className="border border-gray-300 focus:border-gray-900 focus:ring-2 focus:ring-gray-200 rounded-lg"
             />
             <Description className="text-gray-500 text-xs">
-              Must be at least 8 Number
+              Must be at least 8 characters with 1 number
             </Description>
             <FieldError className="text-red-500 text-xs" />
           </TextField>
 
+          {/* Buttons */}
           <div className="flex gap-3 mt-2">
             <Button
               type="submit"
@@ -142,6 +154,7 @@ export default function RegisterPage() {
           </div>
         </Form>
 
+        {/* Login */}
         <p className="text-center text-xs text-gray-400 mt-6">
           Already have an account?{" "}
           <span
@@ -152,6 +165,7 @@ export default function RegisterPage() {
           </span>
         </p>
 
+        {/* Google */}
         <Button
           type="button"
           onClick={async () => {
