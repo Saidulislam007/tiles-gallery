@@ -1,85 +1,132 @@
 "use client";
-import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
-import { useUser } from "../context/UserContext";
+
+import { authClient } from "@/lib/auth-client";
+import {
+  Button,
+  Description,
+  FieldError,
+  Form,
+  Input,
+  Label,
+  TextField,
+} from "@heroui/react";
 
 export default function LoginPage() {
-  const { setUser } = useUser();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const router = useRouter();
-
-  const handleLogin = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const data = {};
 
-    if (!email || !password) {
-      toast.error("Please fill all fields");
+    formData.forEach((value, key) => {
+      data[key] = value.toString();
+    });
+
+    const { data: result, error } = await authClient.signIn.email({
+      email: data.email,
+      password: data.password,
+      rememberMe: true,
+      callbackURL: "/",
+    });
+
+    if (error) {
+      alert(`Error: ${error.message}`);
       return;
     }
 
-    if (email === "user@test.com" && password === "123456") {
-      toast.success("Login Successful");
-
-      setUser({
-        name: "Demo User",
-        email: email,
-        photo: "https://via.placeholder.com/150",
-      });
-
-      setTimeout(() => {
-        router.push("/");
-      }, 1500);
-    } else {
-      toast.error("Invalid credentials");
-    }
+    alert(`Form submitted with: ${JSON.stringify(result, null, 2)}`);
   };
 
   return (
-    <div className="flex items-center justify-center w-full bg-white min-h-screen px-4">
-      <Toaster position="top-right" />
+    <div className="min-h-screen flex items-center justify-center bg-white px-4">
+      
+      {/* White Card */}
+      <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white shadow-xl p-8">
+        
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-semibold text-gray-900">
+            Welcome Back
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Login to continue your journey
+          </p>
+        </div>
 
-      <form
-        onSubmit={handleLogin}
-        className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md space-y-6"
-      >
-        <h2 className="text-2xl font-bold text-gray-800 text-center">
-          Login
-        </h2>
+        <Form className="flex flex-col gap-5" onSubmit={onSubmit}>
+          
+          {/* Email */}
+          <TextField
+            isRequired
+            name="email"
+            type="email"
+            validate={(value) => {
+              if (
+                !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)
+              ) {
+                return "Please enter a valid email address";
+              }
+              return null;
+            }}
+          >
+            <Label className="text-gray-700 text-sm">Email</Label>
+            <Input
+              placeholder="john@example.com"
+              className="border border-gray-300 focus:border-gray-900 focus:ring-2 focus:ring-gray-200 rounded-lg"
+            />
+            <FieldError className="text-red-500 text-xs" />
+          </TextField>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full text-black px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+          {/* Password */}
+          <TextField
+            isRequired
+            minLength={8}
+            name="password"
+            type="password"
+            validate={(value) => {
+              if (!/[0-9]/.test(value)) {
+                return "Password must contain at least one number";
+              }
+              return null;
+            }}
+          >
+            <Label className="text-gray-700 text-sm">Password</Label>
+            <Input
+              placeholder="Enter your password"
+              className="border border-gray-300 focus:border-gray-900 focus:ring-2 focus:ring-gray-200 rounded-lg"
+            />
+            <Description className="text-gray-500 text-xs">
+              Must be at least 8 characters with 1 uppercase and 1 number
+            </Description>
+            <FieldError className="text-red-500 text-xs" />
+          </TextField>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full text-black px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+          {/* Buttons */}
+          <div className="flex gap-3 mt-2">
+            <Button
+              type="submit"
+              className="w-full bg-black text-white hover:bg-gray-800 rounded-lg transition"
+            >
+              Login
+            </Button>
 
-        <button
-          type="submit"
-          className="w-full py-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"
-        >
-          Login
-        </button>
+            <Button
+              type="reset"
+              variant="secondary"
+              className="w-full bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 rounded-lg transition"
+            >
+              Reset
+            </Button>
+          </div>
+        </Form>
 
-        <p className="text-center text-gray-500 text-sm">
-          Do not have an account?{" "}
-          <Link href="/register" className="text-blue-500 hover:underline">
-            Register
-          </Link>
+        {/* Footer */}
+        <p className="text-center text-xs text-gray-400 mt-6">
+          Don’t have an account?{" "}
+          <span className="text-gray-700 font-medium cursor-pointer">
+            Sign up
+          </span>
         </p>
-      </form>
+      </div>
     </div>
   );
 }

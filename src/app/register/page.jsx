@@ -1,92 +1,154 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
-import { useUser } from "../context/UserContext";
+
+import {
+  Button,
+  Description,
+  FieldError,
+  Form,
+  Input,
+  Label,
+  TextField,
+} from "@heroui/react";
+import { authClient } from "@/lib/auth-client";
 
 export default function RegisterPage() {
-  const { setUser } = useUser(); // global user state
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [photo, setPhoto] = useState("");
-  const [password, setPassword] = useState("");
-  const router = useRouter();
-
-  const handleRegister = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
-    if (!name || !email || !password) {
-      toast.error("Please fill all required fields");
+    const formData = new FormData(e.currentTarget);
+    const data = {};
+
+    formData.forEach((value, key) => {
+      data[key] = value.toString();
+    });
+
+    const { data: result, error } = await authClient.signUp.email({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      image: data.image,
+      callbackURL: "/",
+    });
+
+    if (error) {
+      alert(`Error: ${error.message}`);
       return;
     }
 
-    // Save user globally
-    setUser({
-      name,
-      email,
-      photo: photo || "https://via.placeholder.com/150",
-      password,
-    });
-
-    toast.success("Welcome! Your account has been created successfully.", { duration: 2000 });
-
-    // Redirect to home page after toast
-    setTimeout(() => {
-      router.push("/"); // Navigate to home page
-    }, 2000);
+    alert(`Form submitted with: ${JSON.stringify(result, null, 2)}`);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <Toaster position="top-right" />
+    <div className="min-h-screen flex items-center justify-center bg-white px-4">
+      
+      {/* Card */}
+      <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white shadow-xl p-8">
+        
+        {/* Header */}
+        <div className="text-center mb-6">
+          <h1 className="text-2xl font-semibold text-gray-900">
+            Create Account
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Sign up to get started
+          </p>
+        </div>
 
-      <form
-        onSubmit={handleRegister}
-        className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md space-y-6"
-      >
-        <h2 className="text-2xl font-bold text-gray-800 text-center">
-          User Registration
-        </h2>
+        <Form className="flex flex-col gap-5" onSubmit={onSubmit}>
+          
+          {/* Name */}
+          <TextField isRequired name="name" type="text">
+            <Label className="text-gray-700 text-sm">Name</Label>
+            <Input
+              placeholder="Your Name"
+              className="border border-gray-300 focus:border-gray-900 focus:ring-2 focus:ring-gray-200 rounded-lg"
+            />
+            <FieldError className="text-red-500 text-xs" />
+          </TextField>
 
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full text-black px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+          {/* Image */}
+          <TextField isRequired name="image" type="url">
+            <Label className="text-gray-700 text-sm">Image URL</Label>
+            <Input
+              placeholder="Your Image URL"
+              className="border border-gray-300 focus:border-gray-900 focus:ring-2 focus:ring-gray-200 rounded-lg"
+            />
+            <FieldError className="text-red-500 text-xs" />
+          </TextField>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full text-black px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+          {/* Email */}
+          <TextField
+            isRequired
+            name="email"
+            type="email"
+            validate={(value) => {
+              if (
+                !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)
+              ) {
+                return "Please enter a valid email address";
+              }
+              return null;
+            }}
+          >
+            <Label className="text-gray-700 text-sm">Email</Label>
+            <Input
+              placeholder="Your Email"
+              className="border border-gray-300 focus:border-gray-900 focus:ring-2 focus:ring-gray-200 rounded-lg"
+            />
+            <FieldError className="text-red-500 text-xs" />
+          </TextField>
 
-        <input
-          type="text"
-          placeholder="Photo URL (optional)"
-          value={photo}
-          onChange={(e) => setPhoto(e.target.value)}
-          className="w-full text-black px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+          {/* Password */}
+          <TextField
+            isRequired
+            minLength={8}
+            name="password"
+            type="password"
+            validate={(value) => {
+              if (!/[0-9]/.test(value)) {
+                return "Password must contain at least one number";
+              }
+              return null;
+            }}
+          >
+            <Label className="text-gray-700 text-sm">Password</Label>
+            <Input
+              placeholder="Enter your password"
+              className="border border-gray-300 focus:border-gray-900 focus:ring-2 focus:ring-gray-200 rounded-lg"
+            />
+            <Description className="text-gray-500 text-xs">
+              Must be at least 8 characters with 1 uppercase and 1 number
+            </Description>
+            <FieldError className="text-red-500 text-xs" />
+          </TextField>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full text-black px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+          {/* Buttons */}
+          <div className="flex gap-3 mt-2">
+            <Button
+              type="submit"
+              className="w-full bg-black text-white hover:bg-gray-800 rounded-lg transition"
+            >
+              Sign Up
+            </Button>
 
-        <button
-          type="submit"
-          className="w-full py-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"
-        >
-          Register
-        </button>
-      </form>
+            <Button
+              type="reset"
+              variant="secondary"
+              className="w-full bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 rounded-lg transition"
+            >
+              Reset
+            </Button>
+          </div>
+        </Form>
+
+        {/* Footer */}
+        <p className="text-center text-xs text-gray-400 mt-6">
+          Already have an account?{" "}
+          <span className="text-gray-700 font-medium cursor-pointer">
+            Login
+          </span>
+        </p>
+      </div>
     </div>
   );
 }

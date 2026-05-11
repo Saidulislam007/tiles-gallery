@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "server": "json-server --watch db.json --port 5000",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -11,6 +12,8 @@
   "dependencies": {
     "@better-auth/mongo-adapter": "^1.6.9",
     "@heroicons/react": "^2.2.0",
+    "@heroui/react": "^3.0.4",
+    "@heroui/styles": "^3.0.4",
     "animate.css": "^4.1.1",
     "axios": "^1.15.2",
     "better-auth": "^1.6.9",
