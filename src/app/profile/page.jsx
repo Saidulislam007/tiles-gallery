@@ -9,9 +9,7 @@ import { Pencil } from "lucide-react";
 export default function ProfilePage() {
   const router = useRouter();
 
-  // Better Auth Session
   const { data: session, isPending } = authClient.useSession();
-
   const user = session?.user;
 
   const [name, setName] = useState("");
@@ -20,7 +18,6 @@ export default function ProfilePage() {
   const [editField, setEditField] = useState(null);
   const [tempValue, setTempValue] = useState("");
 
-  // Session data load হলে state update হবে
   useEffect(() => {
     if (user) {
       setName(user.name || "");
@@ -28,7 +25,6 @@ export default function ProfilePage() {
     }
   }, [user]);
 
-  // Login না থাকলে redirect
   useEffect(() => {
     if (!isPending && !user) {
       router.push("/login");
@@ -37,8 +33,8 @@ export default function ProfilePage() {
 
   if (isPending) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-lg font-medium">Loading...</p>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <p className="text-gray-600 text-lg">Loading...</p>
       </div>
     );
   }
@@ -63,101 +59,110 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-blue-50 to-gray-200 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <Toaster position="top-right" />
 
-      <div className="w-full max-w-lg bg-white shadow-xl rounded-3xl p-8">
-        {/* Profile Image */}
-        <div className="flex justify-center mb-6 relative">
-          <div className="relative">
-            <img
-              src={photo || "/default-user.png"}
-              alt="Profile"
-              className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
-            />
+      {/* Card */}
+      <div className="w-full max-w-xl bg-white border border-gray-200 shadow-xl rounded-3xl p-8">
 
-            <button
-              onClick={() => handleEditClick("photo", photo)}
-              className="absolute top-2 right-2 bg-white p-2 text-black rounded-full shadow hover:bg-gray-100"
-            >
-              <Pencil size={16} />
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <div className="relative">
+              <img
+                src={photo || "/default-user.png"}
+                alt="Profile"
+                className="w-28 h-28 rounded-full object-cover border-4 border-white shadow-md"
+              />
+              <button
+                onClick={() => handleEditClick("photo", photo)}
+                className="absolute bottom-2 right-2 bg-white border border-gray-200 p-2 rounded-full shadow hover:bg-gray-100 transition"
+              >
+                <Pencil className="text-gray-950" size={14} />
+              </button>
+            </div>
+          </div>
+
+          <h1 className="text-xl font-semibold text-gray-900">
+            {name || "User Profile"}
+          </h1>
+          <p className="text-sm text-gray-500">{user.email}</p>
+        </div>
+
+        {/* Info List */}
+        <div className="space-y-4">
+
+          {/* Name */}
+          <div className="flex items-center justify-between p-4 rounded-xl border border-gray-200 hover:shadow-sm transition">
+            <div>
+              <p className="text-xs text-gray-400">Name</p>
+              <p className="text-gray-900 font-medium">{name}</p>
+            </div>
+            <button onClick={() => handleEditClick("name", name)}>
+              <Pencil size={18} className="text-gray-400 hover:text-gray-700" />
+            </button>
+          </div>
+
+          {/* Email */}
+          <div className="flex items-center justify-between p-4 rounded-xl border border-gray-200 hover:shadow-sm transition">
+            <div>
+              <p className="text-xs text-gray-400">Email</p>
+              <p className="text-gray-900 font-medium">{user.email}</p>
+            </div>
+            <button onClick={() => handleEditClick("email", user.email)}>
+              <Pencil size={18} className="text-gray-400 hover:text-gray-700" />
+            </button>
+          </div>
+
+          {/* Password */}
+          <div className="flex items-center justify-between p-4 rounded-xl border border-gray-200 hover:shadow-sm transition">
+            <div>
+              <p className="text-xs text-gray-400">Password</p>
+              <p className="text-gray-900 font-medium">••••••••</p>
+            </div>
+            <button onClick={() => handleEditClick("password", "")}>
+              <Pencil size={18} className="text-gray-400 hover:text-gray-700" />
             </button>
           </div>
         </div>
-
-        {/* Name */}
-        <div className="flex items-center justify-between border-b py-3">
-          <div>
-            <p className="text-gray-500 text-sm">Name</p>
-            <p className="font-medium text-gray-800">{name}</p>
-          </div>
-
-          <button onClick={() => handleEditClick("name", name)}>
-            <Pencil size={18} className="text-gray-500 hover:text-blue-500" />
-          </button>
-        </div>
-
-        {/* Email */}
-        <div className="flex items-center justify-between border-b py-3">
-          <div>
-            <p className="text-gray-500 text-sm">Email</p>
-            <p className="font-medium text-gray-800">{user.email}</p>
-          </div>
-
-          <button
-            onClick={() => handleEditClick("email", user.email)}
-          >
-            <Pencil size={18} className="text-gray-500 hover:text-blue-500" />
-          </button>
-        </div>
-
-        {/* Password */}
-        <div className="flex items-center justify-between py-3">
-          <div>
-            <p className="text-gray-500 text-sm">Password</p>
-            <p className="font-medium text-gray-800">••••••••</p>
-          </div>
-
-          <button onClick={() => handleEditClick("password", "")}>
-            <Pencil size={18} className="text-gray-500 hover:text-blue-500" />
-          </button>
-        </div>
-
-        {/* Edit Modal */}
-        {editField && (
-          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-2xl w-80 space-y-4 shadow-lg">
-              <h3 className="text-lg text-black font-semibold capitalize">
-                Edit {editField}
-              </h3>
-
-              <input
-                type={editField === "password" ? "password" : "text"}
-                value={tempValue}
-                onChange={(e) => setTempValue(e.target.value)}
-                className="w-full px-4 py-2 border text-black rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                placeholder={`Enter new ${editField}`}
-              />
-
-              <div className="flex justify-end gap-2">
-                <button
-                  onClick={() => setEditField(null)}
-                  className="px-4 py-2 text-black bg-gray-200 rounded-lg"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  onClick={handleSave}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Modal */}
+      {editField && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white w-80 rounded-2xl shadow-2xl p-6 space-y-4">
+
+            <h3 className="text-lg font-semibold text-gray-900 capitalize">
+              Edit {editField}
+            </h3>
+
+            <input
+              type={editField === "password" ? "password" : "text"}
+              value={tempValue}
+              onChange={(e) => setTempValue(e.target.value)}
+              className="w-full px-4 py-2 border text-black border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-200 outline-none"
+              placeholder={`Enter new ${editField}`}
+            />
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setEditField(null)}
+                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleSave}
+                className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800"
+              >
+                Save
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }

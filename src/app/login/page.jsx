@@ -1,6 +1,7 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 import {
   Button,
   Description,
@@ -12,6 +13,8 @@ import {
 } from "@heroui/react";
 
 export default function LoginPage() {
+  const router = useRouter();
+
   const onSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -39,7 +42,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-white px-4">
       
-      {/* White Card */}
+      {/* Card */}
       <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white shadow-xl p-8">
         
         {/* Header */}
@@ -122,7 +125,10 @@ export default function LoginPage() {
         {/* Footer */}
         <p className="text-center text-xs text-gray-400 mt-6">
           Don’t have an account?{" "}
-          <span className="text-gray-700 font-medium cursor-pointer">
+          <span
+            onClick={() => router.push("/register")}
+            className="text-gray-700 font-medium cursor-pointer hover:underline"
+          >
             Sign up
           </span>
         </p>

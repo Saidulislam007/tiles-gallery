@@ -146,7 +146,8 @@ export default function TileDetailsPage() {
         </div>
 
         {/* Tile Info */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4 text-gray-700">
+        <div className="">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4 text-gray-700">
           <div>
             <span className="font-semibold">
               Category:
@@ -219,6 +220,7 @@ export default function TileDetailsPage() {
           <p className="mt-1 leading-7">
             {tile.description}
           </p>
+        </div>
         </div>
       </div>
     </div>
