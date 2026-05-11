@@ -40,10 +40,10 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white px-4">
-      
+
       {/* Card */}
       <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white shadow-xl p-8">
-        
+
         {/* Header */}
         <div className="text-center mb-6">
           <h1 className="text-2xl font-semibold text-gray-900">
@@ -55,7 +55,7 @@ export default function RegisterPage() {
         </div>
 
         <Form className="flex flex-col gap-5" onSubmit={onSubmit}>
-          
+
           {/* Name */}
           <TextField isRequired name="name" type="text">
             <Label className="text-gray-700 text-sm">Name</Label>
@@ -148,6 +148,49 @@ export default function RegisterPage() {
             Login
           </span>
         </p>
+
+        {/* Google Sign Up Button */}
+        <Button
+          type="button"
+          onClick={async () => {
+            try {
+              await authClient.signIn.social({
+                provider: "google",
+                callbackURL: "/",
+              });
+            } catch (error) {
+              console.error(error);
+            }
+          }}
+          className="w-full bg-white text-black hover:bg-gray-200 rounded-lg transition mt-3 flex items-center justify-center gap-2"
+        >
+          {/* Google Icon */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 48 48"
+            width="20"
+            height="20"
+          >
+            <path
+              fill="#FFC107"
+              d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-4z"
+            />
+            <path
+              fill="#FF3D00"
+              d="M6.3 14.7l6.6 4.8C14.7 16.1 19 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 16.3 4 9.6 8.1 6.3 14.7z"
+            />
+            <path
+              fill="#4CAF50"
+              d="M24 44c5.2 0 10-2 13.6-5.2l-6.3-5.2C29.3 35.2 26.8 36 24 36c-5.3 0-9.7-3.3-11.3-8.1l-6.6 5.1C9.4 39.9 16.2 44 24 44z"
+            />
+            <path
+              fill="#1976D2"
+              d="M43.6 20.5H42V20H24v8h11.3c-1.1 3-3.4 5.4-6.3 6.8l6.3 5.2C40.4 37.1 44 31.1 44 24c0-1.3-.1-2.7-.4-3.5z"
+            />
+          </svg>
+
+          Continue with Google
+        </Button>
       </div>
     </div>
   );
