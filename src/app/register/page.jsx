@@ -119,7 +119,7 @@ export default function RegisterPage() {
               className="border border-gray-300 focus:border-gray-900 focus:ring-2 focus:ring-gray-200 rounded-lg"
             />
             <Description className="text-gray-500 text-xs">
-              Must be at least 8 characters with 1 uppercase and 1 number
+              Must be at least 8 Number
             </Description>
             <FieldError className="text-red-500 text-xs" />
           </TextField>
