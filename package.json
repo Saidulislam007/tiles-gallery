@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node init && next dev",
     "server": "json-server --watch db.json --port 5000",
-    "dev:all": "concurrently \"npm run dev\" \"npm run server\"",
-    "build": "next build",
-    "start": "next start",
+    "dev:all": "node init && concurrently \"npm run dev\" \"npm run server\"",
+    "build": "node init && next build",
+    "start": "node init && next start",
     "lint": "eslint"
   },
   "dependencies": {
